@@ -1,0 +1,7 @@
+ktestfunction MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test339.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test1.ktest
+src/chmod.c:mode_changed 0 0 
+src/chmod.c:describe_change 0 0 
+src/chmod.c:process_file 0 0 
+src/chmod.c:process_files 0 0 
+src/chmod.c:usage 1 1 
+src/chmod.c:main 1 1 

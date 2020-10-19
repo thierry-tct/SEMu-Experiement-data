@@ -1,0 +1,9 @@
+Mart@Progress: Mutation took: 1.04739 Seconds.
+Mart@Progress: writing mutants to file took: 9.11772 Seconds.
+Mart@Progress: Removing TCE Duplicates  & WM & writing mutants IRs took: 336.3 Seconds.
+Mart@Progress:  Compiling Mutants took: 121 Seconds.
+
+Mart@Progress:  TOTAL RUNTIME: 7.71667 min.
+
+# Number of Mutants:   PreTCE: 3501, PostTCE: 2278, Equivalent: 97, Duplicates: 1126
+

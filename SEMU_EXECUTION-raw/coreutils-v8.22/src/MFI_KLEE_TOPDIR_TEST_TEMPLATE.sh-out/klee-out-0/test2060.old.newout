@@ -1,0 +1,4 @@
+klee-replay: TEST CASE: /media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/repos/chown/src/MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test2060.ktest
+klee-replay: ARGS: "/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown" ":+2" "A" 
+/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown: changing group of 'A': Operation not permitted
+klee-replay: EXIT STATUS: ABNORMAL 1 

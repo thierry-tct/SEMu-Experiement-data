@@ -1,0 +1,5 @@
+klee-replay: TEST CASE: /media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/repos/chown/src/MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test168.ktest
+klee-replay: ARGS: "/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown" "-cH" "--=" 
+/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown: option '--=' is ambiguous; possibilities: '--recursive' '--version' '--help' '--verbose' '--reference' '--silent' '--quiet' '--preserve-root' '--no-preserve-root' '--no-dereference' '--from' '--dereference' '--changes'
+Try '/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown --help' for more information.
+klee-replay: EXIT STATUS: ABNORMAL 1 

@@ -1,0 +1,668 @@
+        -:    0:Source:src/system.h
+        -:    0:Graph:src/chown.gcno
+        -:    0:Data:src/chown.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/* system-dependent definitions for coreutils
+        -:    2:   Copyright (C) 1989-2013 Free Software Foundation, Inc.
+        -:    3:
+        -:    4:   This program is free software: you can redistribute it and/or modify
+        -:    5:   it under the terms of the GNU General Public License as published by
+        -:    6:   the Free Software Foundation, either version 3 of the License, or
+        -:    7:   (at your option) any later version.
+        -:    8:
+        -:    9:   This program is distributed in the hope that it will be useful,
+        -:   10:   but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   11:   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   12:   GNU General Public License for more details.
+        -:   13:
+        -:   14:   You should have received a copy of the GNU General Public License
+        -:   15:   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+        -:   16:
+        -:   17:/* Include this file _after_ system headers if possible.  */
+        -:   18:
+        -:   19:#include <alloca.h>
+        -:   20:
+        -:   21:/* Include <sys/types.h> before this file.
+        -:   22:   Note this doesn't warn if we're included
+        -:   23:   before all system headers.  */
+        -:   24:
+        -:   25:#if 2 < __GLIBC__ || ( 2 == ___GLIBC__ && 2 <= __GLIBC_MINOR__ )
+        -:   26:# if ! defined _SYS_TYPES_H
+        -:   27:you must include <sys/types.h> before including this file
+        -:   28:# endif
+        -:   29:#endif
+        -:   30:
+        -:   31:#include <sys/stat.h>
+        -:   32:
+        -:   33:/* Commonly used file permission combination.  */
+        -:   34:#define MODE_RW_UGO (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+        -:   35:
+        -:   36:#if !defined HAVE_MKFIFO
+        -:   37:# define mkfifo(name, mode) mknod (name, (mode) | S_IFIFO, 0)
+        -:   38:#endif
+        -:   39:
+        -:   40:#if HAVE_SYS_PARAM_H
+        -:   41:# include <sys/param.h>
+        -:   42:#endif
+        -:   43:
+        -:   44:#include <unistd.h>
+        -:   45:
+        -:   46:#include <limits.h>
+        -:   47:
+        -:   48:#include "pathmax.h"
+        -:   49:#ifndef PATH_MAX
+        -:   50:# define PATH_MAX 8192
+        -:   51:#endif
+        -:   52:
+        -:   53:#include "configmake.h"
+        -:   54:
+        -:   55:#include <sys/time.h>
+        -:   56:#include <time.h>
+        -:   57:
+        -:   58:/* Since major is a function on SVR4, we can't use 'ifndef major'.  */
+        -:   59:#if MAJOR_IN_MKDEV
+        -:   60:# include <sys/mkdev.h>
+        -:   61:# define HAVE_MAJOR
+        -:   62:#endif
+        -:   63:#if MAJOR_IN_SYSMACROS
+        -:   64:# include <sys/sysmacros.h>
+        -:   65:# define HAVE_MAJOR
+        -:   66:#endif
+        -:   67:#ifdef major			/* Might be defined in sys/types.h.  */
+        -:   68:# define HAVE_MAJOR
+        -:   69:#endif
+        -:   70:
+        -:   71:#ifndef HAVE_MAJOR
+        -:   72:# define major(dev)  (((dev) >> 8) & 0xff)
+        -:   73:# define minor(dev)  ((dev) & 0xff)
+        -:   74:# define makedev(maj, min)  (((maj) << 8) | (min))
+        -:   75:#endif
+        -:   76:#undef HAVE_MAJOR
+        -:   77:
+        -:   78:#if ! defined makedev && defined mkdev
+        -:   79:# define makedev(maj, min)  mkdev (maj, min)
+        -:   80:#endif
+        -:   81:
+        -:   82:#include <string.h>
+        -:   83:#include <errno.h>
+        -:   84:
+        -:   85:/* Some systems don't define this; POSIX mentions it but says it is
+        -:   86:   obsolete.  gnulib defines it, but only on native Windows systems,
+        -:   87:   and there only because MSVC 10 does.  */
+        -:   88:#ifndef ENODATA
+        -:   89:# define ENODATA (-1)
+        -:   90:#endif
+        -:   91:
+        -:   92:#include <stdbool.h>
+        -:   93:#include <stdlib.h>
+        -:   94:#include "version.h"
+        -:   95:
+        -:   96:/* Exit statuses for programs like 'env' that exec other programs.  */
+        -:   97:enum
+        -:   98:{
+        -:   99:  EXIT_TIMEDOUT = 124, /* Time expired before child completed.  */
+        -:  100:  EXIT_CANCELED = 125, /* Internal error prior to exec attempt.  */
+        -:  101:  EXIT_CANNOT_INVOKE = 126, /* Program located, but not usable.  */
+        -:  102:  EXIT_ENOENT = 127 /* Could not find program to exec.  */
+        -:  103:};
+        -:  104:
+        -:  105:#include "exitfail.h"
+        -:  106:
+        -:  107:/* Set exit_failure to STATUS if that's not the default already.  */
+        -:  108:static inline void
+        -:  109:initialize_exit_failure (int status)
+        -:  110:{
+        -:  111:  if (status != EXIT_FAILURE)
+        -:  112:    exit_failure = status;
+        -:  113:}
+        -:  114:
+        -:  115:#include <fcntl.h>
+        -:  116:
+        -:  117:#include <dirent.h>
+        -:  118:#ifndef _D_EXACT_NAMLEN
+        -:  119:# define _D_EXACT_NAMLEN(dp) strlen ((dp)->d_name)
+        -:  120:#endif
+        -:  121:
+        -:  122:enum
+        -:  123:{
+        -:  124:  NOT_AN_INODE_NUMBER = 0
+        -:  125:};
+        -:  126:
+        -:  127:#ifdef D_INO_IN_DIRENT
+        -:  128:# define D_INO(dp) (dp)->d_ino
+        -:  129:#else
+        -:  130:/* Some systems don't have inodes, so fake them to avoid lots of ifdefs.  */
+        -:  131:# define D_INO(dp) NOT_AN_INODE_NUMBER
+        -:  132:#endif
+        -:  133:
+        -:  134:/* include here for SIZE_MAX.  */
+        -:  135:#include <inttypes.h>
+        -:  136:
+        -:  137:/* Redirection and wildcarding when done by the utility itself.
+        -:  138:   Generally a noop, but used in particular for native VMS. */
+        -:  139:#ifndef initialize_main
+        -:  140:# define initialize_main(ac, av)
+        -:  141:#endif
+        -:  142:
+        -:  143:#include "stat-macros.h"
+        -:  144:
+        -:  145:#include "timespec.h"
+        -:  146:
+        -:  147:#include <ctype.h>
+        -:  148:
+        -:  149:/* ISDIGIT differs from isdigit, as follows:
+        -:  150:   - Its arg may be any int or unsigned int; it need not be an unsigned char
+        -:  151:     or EOF.
+        -:  152:   - It's typically faster.
+        -:  153:   POSIX says that only '0' through '9' are digits.  Prefer ISDIGIT to
+        -:  154:   isdigit unless it's important to use the locale's definition
+        -:  155:   of 'digit' even when the host does not conform to POSIX.  */
+        -:  156:#define ISDIGIT(c) ((unsigned int) (c) - '0' <= 9)
+        -:  157:
+        -:  158:/* Convert a possibly-signed character to an unsigned character.  This is
+        -:  159:   a bit safer than casting to unsigned char, since it catches some type
+        -:  160:   errors that the cast doesn't.  */
+        -:  161:static inline unsigned char to_uchar (char ch) { return ch; }
+        -:  162:
+        -:  163:#include <locale.h>
+        -:  164:
+        -:  165:/* Take care of NLS matters.  */
+        -:  166:
+        -:  167:#include "gettext.h"
+        -:  168:#if ! ENABLE_NLS
+        -:  169:# undef textdomain
+        -:  170:# define textdomain(Domainname) /* empty */
+        -:  171:# undef bindtextdomain
+        -:  172:# define bindtextdomain(Domainname, Dirname) /* empty */
+        -:  173:#endif
+        -:  174:
+        -:  175:#define _(msgid) gettext (msgid)
+        -:  176:#define N_(msgid) msgid
+        -:  177:
+        -:  178:/* Return a value that pluralizes the same way that N does, in all
+        -:  179:   languages we know of.  */
+        -:  180:static inline unsigned long int
+        -:  181:select_plural (uintmax_t n)
+        -:  182:{
+        -:  183:  /* Reduce by a power of ten, but keep it away from zero.  The
+        -:  184:     gettext manual says 1000000 should be safe.  */
+        -:  185:  enum { PLURAL_REDUCER = 1000000 };
+        -:  186:  return (n <= ULONG_MAX ? n : n % PLURAL_REDUCER + PLURAL_REDUCER);
+        -:  187:}
+        -:  188:
+        -:  189:#define STREQ(a, b) (strcmp (a, b) == 0)
+        -:  190:#define STREQ_LEN(a, b, n) (strncmp (a, b, n) == 0)
+        -:  191:#define STRPREFIX(a, b) (strncmp(a, b, strlen (b)) == 0)
+        -:  192:
+        -:  193:/* Just like strncmp, but the second argument must be a literal string
+        -:  194:   and you don't specify the length;  that comes from the literal.  */
+        -:  195:#define STRNCMP_LIT(s, literal) \
+        -:  196:  strncmp (s, "" literal "", sizeof (literal) - 1)
+        -:  197:
+        -:  198:#if !HAVE_DECL_GETLOGIN
+        -:  199:char *getlogin ();
+        -:  200:#endif
+        -:  201:
+        -:  202:#if !HAVE_DECL_TTYNAME
+        -:  203:char *ttyname ();
+        -:  204:#endif
+        -:  205:
+        -:  206:#if !HAVE_DECL_GETEUID
+        -:  207:uid_t geteuid ();
+        -:  208:#endif
+        -:  209:
+        -:  210:#if !HAVE_DECL_GETPWUID
+        -:  211:struct passwd *getpwuid ();
+        -:  212:#endif
+        -:  213:
+        -:  214:#if !HAVE_DECL_GETGRGID
+        -:  215:struct group *getgrgid ();
+        -:  216:#endif
+        -:  217:
+        -:  218:/* Interix has replacements for getgr{gid,nam,ent}, that don't
+        -:  219:   query the domain controller for group members when not required.
+        -:  220:   This speeds up the calls tremendously (<1 ms vs. >3 s). */
+        -:  221:/* To protect any system that could provide _nomembers functions
+        -:  222:   other than interix, check for HAVE_SETGROUPS, as interix is
+        -:  223:   one of the very few (the only?) platform that lacks it */
+        -:  224:#if ! HAVE_SETGROUPS
+        -:  225:# if HAVE_GETGRGID_NOMEMBERS
+        -:  226:#  define getgrgid(gid) getgrgid_nomembers(gid)
+        -:  227:# endif
+        -:  228:# if HAVE_GETGRNAM_NOMEMBERS
+        -:  229:#  define getgrnam(nam) getgrnam_nomembers(nam)
+        -:  230:# endif
+        -:  231:# if HAVE_GETGRENT_NOMEMBERS
+        -:  232:#  define getgrent() getgrent_nomembers()
+        -:  233:# endif
+        -:  234:#endif
+        -:  235:
+        -:  236:#if !HAVE_DECL_GETUID
+        -:  237:uid_t getuid ();
+        -:  238:#endif
+        -:  239:
+        -:  240:#include "xalloc.h"
+        -:  241:#include "verify.h"
+        -:  242:
+        -:  243:/* This is simply a shorthand for the common case in which
+        -:  244:   the third argument to x2nrealloc would be 'sizeof *(P)'.
+        -:  245:   Ensure that sizeof *(P) is *not* 1.  In that case, it'd be
+        -:  246:   better to use X2REALLOC, although not strictly necessary.  */
+        -:  247:#define X2NREALLOC(P, PN) ((void) verify_true (sizeof *(P) != 1), \
+        -:  248:                           x2nrealloc (P, PN, sizeof *(P)))
+        -:  249:
+        -:  250:/* Using x2realloc (when appropriate) usually makes your code more
+        -:  251:   readable than using x2nrealloc, but it also makes it so your
+        -:  252:   code will malfunction if sizeof *(P) ever becomes 2 or greater.
+        -:  253:   So use this macro instead of using x2realloc directly.  */
+        -:  254:#define X2REALLOC(P, PN) ((void) verify_true (sizeof *(P) == 1), \
+        -:  255:                          x2realloc (P, PN))
+        -:  256:
+        -:  257:#include "unlocked-io.h"
+        -:  258:#include "same-inode.h"
+        -:  259:
+        -:  260:#include "dirname.h"
+        -:  261:#include "openat.h"
+        -:  262:
+        -:  263:static inline bool
+        -:  264:dot_or_dotdot (char const *file_name)
+        -:  265:{
+        -:  266:  if (file_name[0] == '.')
+        -:  267:    {
+        -:  268:      char sep = file_name[(file_name[1] == '.') + 1];
+        -:  269:      return (! sep || ISSLASH (sep));
+        -:  270:    }
+        -:  271:  else
+        -:  272:    return false;
+        -:  273:}
+        -:  274:
+        -:  275:/* A wrapper for readdir so that callers don't see entries for '.' or '..'.  */
+        -:  276:static inline struct dirent const *
+        -:  277:readdir_ignoring_dot_and_dotdot (DIR *dirp)
+        -:  278:{
+        -:  279:  while (1)
+        -:  280:    {
+        -:  281:      struct dirent const *dp = readdir (dirp);
+        -:  282:      if (dp == NULL || ! dot_or_dotdot (dp->d_name))
+        -:  283:        return dp;
+        -:  284:    }
+        -:  285:}
+        -:  286:
+        -:  287:/* Return true if DIR is determined to be an empty directory.  */
+        -:  288:static inline bool
+        -:  289:is_empty_dir (int fd_cwd, char const *dir)
+        -:  290:{
+        -:  291:  DIR *dirp;
+        -:  292:  struct dirent const *dp;
+        -:  293:  int saved_errno;
+        -:  294:  int fd = openat (fd_cwd, dir,
+        -:  295:                   (O_RDONLY | O_DIRECTORY
+        -:  296:                    | O_NOCTTY | O_NOFOLLOW | O_NONBLOCK));
+        -:  297:
+        -:  298:  if (fd < 0)
+        -:  299:    return false;
+        -:  300:
+        -:  301:  dirp = fdopendir (fd);
+        -:  302:  if (dirp == NULL)
+        -:  303:    {
+        -:  304:      close (fd);
+        -:  305:      return false;
+        -:  306:    }
+        -:  307:
+        -:  308:  errno = 0;
+        -:  309:  dp = readdir_ignoring_dot_and_dotdot (dirp);
+        -:  310:  saved_errno = errno;
+        -:  311:  closedir (dirp);
+        -:  312:  if (dp != NULL)
+        -:  313:    return false;
+        -:  314:  return saved_errno == 0 ? true : false;
+        -:  315:}
+        -:  316:
+        -:  317:/* Factor out some of the common --help and --version processing code.  */
+        -:  318:
+        -:  319:/* These enum values cannot possibly conflict with the option values
+        -:  320:   ordinarily used by commands, including CHAR_MAX + 1, etc.  Avoid
+        -:  321:   CHAR_MIN - 1, as it may equal -1, the getopt end-of-options value.  */
+        -:  322:enum
+        -:  323:{
+        -:  324:  GETOPT_HELP_CHAR = (CHAR_MIN - 2),
+        -:  325:  GETOPT_VERSION_CHAR = (CHAR_MIN - 3)
+        -:  326:};
+        -:  327:
+        -:  328:#define GETOPT_HELP_OPTION_DECL \
+        -:  329:  "help", no_argument, NULL, GETOPT_HELP_CHAR
+        -:  330:#define GETOPT_VERSION_OPTION_DECL \
+        -:  331:  "version", no_argument, NULL, GETOPT_VERSION_CHAR
+        -:  332:#define GETOPT_SELINUX_CONTEXT_OPTION_DECL \
+        -:  333:  "context", optional_argument, NULL, 'Z'
+        -:  334:
+        -:  335:#define case_GETOPT_HELP_CHAR			\
+        -:  336:  case GETOPT_HELP_CHAR:			\
+        -:  337:    usage (EXIT_SUCCESS);			\
+        -:  338:    break;
+        -:  339:
+        -:  340:/* Program_name must be a literal string.
+        -:  341:   Usually it is just PROGRAM_NAME.  */
+        -:  342:#define USAGE_BUILTIN_WARNING \
+        -:  343:  _("\n" \
+        -:  344:"NOTE: your shell may have its own version of %s, which usually supersedes\n" \
+        -:  345:"the version described here.  Please refer to your shell's documentation\n" \
+        -:  346:"for details about the options it supports.\n")
+        -:  347:
+        -:  348:#define HELP_OPTION_DESCRIPTION \
+        -:  349:  _("      --help     display this help and exit\n")
+        -:  350:#define VERSION_OPTION_DESCRIPTION \
+        -:  351:  _("      --version  output version information and exit\n")
+        -:  352:
+        -:  353:#include "closein.h"
+        -:  354:#include "closeout.h"
+        -:  355:
+        -:  356:#define emit_bug_reporting_address unused__emit_bug_reporting_address
+        -:  357:#include "version-etc.h"
+        -:  358:#undef emit_bug_reporting_address
+        -:  359:
+        -:  360:#include "propername.h"
+        -:  361:/* Define away proper_name (leaving proper_name_utf8, which affects far
+        -:  362:   fewer programs), since it's not worth the cost of adding ~17KB to
+        -:  363:   the x86_64 text size of every single program.  This avoids a 40%
+        -:  364:   (almost ~2MB) increase in the on-disk space utilization for the set
+        -:  365:   of the 100 binaries. */
+        -:  366:#define proper_name(x) (x)
+        -:  367:
+        -:  368:#include "progname.h"
+        -:  369:
+        -:  370:#define case_GETOPT_VERSION_CHAR(Program_name, Authors)			\
+        -:  371:  case GETOPT_VERSION_CHAR:						\
+        -:  372:    version_etc (stdout, Program_name, PACKAGE_NAME, Version, Authors,	\
+        -:  373:                 (char *) NULL);					\
+        -:  374:    exit (EXIT_SUCCESS);						\
+        -:  375:    break;
+        -:  376:
+        -:  377:#ifndef MAX
+        -:  378:# define MAX(a, b) ((a) > (b) ? (a) : (b))
+        -:  379:#endif
+        -:  380:
+        -:  381:#ifndef MIN
+        -:  382:# define MIN(a,b) (((a) < (b)) ? (a) : (b))
+        -:  383:#endif
+        -:  384:
+        -:  385:#include "intprops.h"
+        -:  386:
+        -:  387:#ifndef SSIZE_MAX
+        -:  388:# define SSIZE_MAX TYPE_MAXIMUM (ssize_t)
+        -:  389:#endif
+        -:  390:
+        -:  391:#ifndef OFF_T_MIN
+        -:  392:# define OFF_T_MIN TYPE_MINIMUM (off_t)
+        -:  393:#endif
+        -:  394:
+        -:  395:#ifndef OFF_T_MAX
+        -:  396:# define OFF_T_MAX TYPE_MAXIMUM (off_t)
+        -:  397:#endif
+        -:  398:
+        -:  399:#ifndef UID_T_MAX
+        -:  400:# define UID_T_MAX TYPE_MAXIMUM (uid_t)
+        -:  401:#endif
+        -:  402:
+        -:  403:#ifndef GID_T_MAX
+        -:  404:# define GID_T_MAX TYPE_MAXIMUM (gid_t)
+        -:  405:#endif
+        -:  406:
+        -:  407:#ifndef PID_T_MAX
+        -:  408:# define PID_T_MAX TYPE_MAXIMUM (pid_t)
+        -:  409:#endif
+        -:  410:
+        -:  411:/* Use this to suppress gcc's '...may be used before initialized' warnings. */
+        -:  412:#ifdef lint
+        -:  413:# define IF_LINT(Code) Code
+        -:  414:#else
+        -:  415:# define IF_LINT(Code) /* empty */
+        -:  416:#endif
+        -:  417:
+        -:  418:#ifndef __attribute__
+        -:  419:# if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)
+        -:  420:#  define __attribute__(x) /* empty */
+        -:  421:# endif
+        -:  422:#endif
+        -:  423:
+        -:  424:#ifndef ATTRIBUTE_NORETURN
+        -:  425:# define ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
+        -:  426:#endif
+        -:  427:
+        -:  428:/* The warn_unused_result attribute appeared first in gcc-3.4.0 */
+        -:  429:#undef ATTRIBUTE_WARN_UNUSED_RESULT
+        -:  430:#if __GNUC__ < 3 || (__GNUC__ == 3 && __GNUC_MINOR__ < 4)
+        -:  431:# define ATTRIBUTE_WARN_UNUSED_RESULT /* empty */
+        -:  432:#else
+        -:  433:# define ATTRIBUTE_WARN_UNUSED_RESULT __attribute__ ((__warn_unused_result__))
+        -:  434:#endif
+        -:  435:
+        -:  436:#if defined strdupa
+        -:  437:# define ASSIGN_STRDUPA(DEST, S)		\
+        -:  438:  do { DEST = strdupa (S); } while (0)
+        -:  439:#else
+        -:  440:# define ASSIGN_STRDUPA(DEST, S)		\
+        -:  441:  do						\
+        -:  442:    {						\
+        -:  443:      const char *s_ = (S);			\
+        -:  444:      size_t len_ = strlen (s_) + 1;		\
+        -:  445:      char *tmp_dest_ = alloca (len_);		\
+        -:  446:      DEST = memcpy (tmp_dest_, s_, len_);	\
+        -:  447:    }						\
+        -:  448:  while (0)
+        -:  449:#endif
+        -:  450:
+        -:  451:#if ! HAVE_SYNC
+        -:  452:# define sync() /* empty */
+        -:  453:#endif
+        -:  454:
+        -:  455:/* Compute the greatest common divisor of U and V using Euclid's
+        -:  456:   algorithm.  U and V must be nonzero.  */
+        -:  457:
+        -:  458:static inline size_t _GL_ATTRIBUTE_CONST
+        -:  459:gcd (size_t u, size_t v)
+        -:  460:{
+        -:  461:  do
+        -:  462:    {
+        -:  463:      size_t t = u % v;
+        -:  464:      u = v;
+        -:  465:      v = t;
+        -:  466:    }
+        -:  467:  while (v);
+        -:  468:
+        -:  469:  return u;
+        -:  470:}
+        -:  471:
+        -:  472:/* Compute the least common multiple of U and V.  U and V must be
+        -:  473:   nonzero.  There is no overflow checking, so callers should not
+        -:  474:   specify outlandish sizes.  */
+        -:  475:
+        -:  476:static inline size_t _GL_ATTRIBUTE_CONST
+        -:  477:lcm (size_t u, size_t v)
+        -:  478:{
+        -:  479:  return u * (v / gcd (u, v));
+        -:  480:}
+        -:  481:
+        -:  482:/* Return PTR, aligned upward to the next multiple of ALIGNMENT.
+        -:  483:   ALIGNMENT must be nonzero.  The caller must arrange for ((char *)
+        -:  484:   PTR) through ((char *) PTR + ALIGNMENT - 1) to be addressable
+        -:  485:   locations.  */
+        -:  486:
+        -:  487:static inline void *
+        -:  488:ptr_align (void const *ptr, size_t alignment)
+        -:  489:{
+        -:  490:  char const *p0 = ptr;
+        -:  491:  char const *p1 = p0 + alignment - 1;
+        -:  492:  return (void *) (p1 - (size_t) p1 % alignment);
+        -:  493:}
+        -:  494:
+        -:  495:/* Return whether the buffer consists entirely of NULs.
+        -:  496:   Note the word after the buffer must be non NUL. */
+        -:  497:
+        -:  498:static inline bool _GL_ATTRIBUTE_PURE
+        -:  499:is_nul (void const *buf, size_t bufsize)
+        -:  500:{
+        -:  501:  typedef uintptr_t word;
+        -:  502:  void const *vp;
+        -:  503:  char const *cbuf = buf;
+        -:  504:  word const *wp = buf;
+        -:  505:
+        -:  506:  /* Find first nonzero *word*, or the word with the sentinel.  */
+        -:  507:  while (*wp++ == 0)
+        -:  508:    continue;
+        -:  509:
+        -:  510:  /* Find the first nonzero *byte*, or the sentinel.  */
+        -:  511:  vp = wp - 1;
+        -:  512:  char const *cp = vp;
+        -:  513:  while (*cp++ == 0)
+        -:  514:    continue;
+        -:  515:
+        -:  516:  return cbuf + bufsize < cp;
+        -:  517:}
+        -:  518:
+        -:  519:/* If 10*Accum + Digit_val is larger than the maximum value for Type,
+        -:  520:   then don't update Accum and return false to indicate it would
+        -:  521:   overflow.  Otherwise, set Accum to that new value and return true.
+        -:  522:   Verify at compile-time that Type is Accum's type, and that Type is
+        -:  523:   unsigned.  Accum must be an object, so that we can take its
+        -:  524:   address.  Accum and Digit_val may be evaluated multiple times.
+        -:  525:
+        -:  526:   The "Added check" below is not strictly required, but it causes GCC
+        -:  527:   to return a nonzero exit status instead of merely a warning
+        -:  528:   diagnostic, and that is more useful.  */
+        -:  529:
+        -:  530:#define DECIMAL_DIGIT_ACCUMULATE(Accum, Digit_val, Type)		\
+        -:  531:  (									\
+        -:  532:   (void) (&(Accum) == (Type *) NULL),  /* The type matches.  */	\
+        -:  533:   (void) verify_true (! TYPE_SIGNED (Type)), /* The type is unsigned.  */ \
+        -:  534:   (void) verify_true (sizeof (Accum) == sizeof (Type)), /* Added check.  */ \
+        -:  535:   (((Type) -1 / 10 < (Accum)						\
+        -:  536:     || (Type) ((Accum) * 10 + (Digit_val)) < (Accum))			\
+        -:  537:    ? false : (((Accum) = (Accum) * 10 + (Digit_val)), true))		\
+        -:  538:  )
+        -:  539:
+        -:  540:static inline void
+        -:  541:emit_mandatory_arg_note (void)
+        -:  542:{
+        -:  543:  fputs (_("\n\
+        -:  544:Mandatory arguments to long options are mandatory for short options too.\n\
+        -:  545:"), stdout);
+        -:  546:}
+        -:  547:
+        -:  548:static inline void
+        -:  549:emit_size_note (void)
+        -:  550:{
+        -:  551:  fputs (_("\n\
+        -:  552:SIZE is an integer and optional unit (example: 10M is 10*1024*1024).  Units\n\
+        -:  553:are K, M, G, T, P, E, Z, Y (powers of 1024) or KB, MB, ... (powers of 1000).\n\
+        -:  554:"), stdout);
+        -:  555:}
+        -:  556:
+        -:  557:static inline void
+        -:  558:emit_blocksize_note (char const *program)
+        -:  559:{
+        -:  560:  printf (_("\n\
+        -:  561:Display values are in units of the first available SIZE from --block-size,\n\
+        -:  562:and the %s_BLOCK_SIZE, BLOCK_SIZE and BLOCKSIZE environment variables.\n\
+        -:  563:Otherwise, units default to 1024 bytes (or 512 if POSIXLY_CORRECT is set).\n\
+        -:  564:"), program);
+        -:  565:}
+        -:  566:
+        -:  567:static inline void
+function emit_ancillary_info called 0 returned 0% blocks executed 0%
+    #####:  568:emit_ancillary_info (void)
+        -:  569:{
+    #####:  570:  printf (_("\n%s online help: <%s>\n"), PACKAGE_NAME, PACKAGE_URL);
+call    0 never executed
+        -:  571:  /* Don't output this redundant message for English locales.
+        -:  572:     Note we still output for 'C' so that it gets included in the man page.  */
+    #####:  573:  const char *lc_messages = setlocale (LC_MESSAGES, NULL);
+call    0 never executed
+    #####:  574:  if (lc_messages && STRNCMP_LIT (lc_messages, "en_"))
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  575:    {
+        -:  576:      /* TRANSLATORS: Replace LANG_CODE in this URL with your language code
+        -:  577:         <http://translationproject.org/team/LANG_CODE.html> to form one of
+        -:  578:         the URLs at http://translationproject.org/team/.  Otherwise, replace
+        -:  579:         the entire URL with your translation team's email address.  */
+    #####:  580:      printf (_("Report %s translation bugs to "
+call    0 never executed
+call    1 never executed
+        -:  581:                "<http://translationproject.org/team/>\n"),
+        -:  582:                last_component (program_name));
+        -:  583:    }
+    #####:  584:  printf (_("For complete documentation, run: "
+call    0 never executed
+call    1 never executed
+        -:  585:            "info coreutils '%s invocation'\n"), last_component (program_name));
+    #####:  586:}
+        -:  587:
+        -:  588:static inline void
+function emit_try_help called 1 returned 100% blocks executed 100%
+        1:  589:emit_try_help (void)
+        -:  590:{
+        1:  591:  fprintf (stderr, _("Try '%s --help' for more information.\n"), program_name);
+call    0 returned 1
+        1:  592:}
+        -:  593:
+        -:  594:#include "inttostr.h"
+        -:  595:
+        -:  596:static inline char *
+        -:  597:timetostr (time_t t, char *buf)
+        -:  598:{
+        -:  599:  return (TYPE_SIGNED (time_t)
+        -:  600:          ? imaxtostr (t, buf)
+        -:  601:          : umaxtostr (t, buf));
+        -:  602:}
+        -:  603:
+        -:  604:static inline char *
+function bad_cast called 0 returned 0% blocks executed 0%
+    #####:  605:bad_cast (char const *s)
+        -:  606:{
+    #####:  607:  return (char *) s;
+        -:  608:}
+        -:  609:
+        -:  610:/* Return a boolean indicating whether SB->st_size is defined.  */
+        -:  611:static inline bool
+        -:  612:usable_st_size (struct stat const *sb)
+        -:  613:{
+        -:  614:  return (S_ISREG (sb->st_mode) || S_ISLNK (sb->st_mode)
+        -:  615:          || S_TYPEISSHM (sb) || S_TYPEISTMO (sb));
+        -:  616:}
+        -:  617:
+        -:  618:void usage (int status) ATTRIBUTE_NORETURN;
+        -:  619:
+        -:  620:#define emit_cycle_warning(file_name)	\
+        -:  621:  do					\
+        -:  622:    {					\
+        -:  623:      error (0, 0, _("\
+        -:  624:WARNING: Circular directory structure.\n\
+        -:  625:This almost certainly means that you have a corrupted file system.\n\
+        -:  626:NOTIFY YOUR SYSTEM MANAGER.\n\
+        -:  627:The following directory is part of the cycle:\n  %s\n"), \
+        -:  628:             quote (file_name));	\
+        -:  629:    }					\
+        -:  630:  while (0)
+        -:  631:
+        -:  632:/* Like stpncpy, but do ensure that the result is NUL-terminated,
+        -:  633:   and do not NUL-pad out to LEN.  I.e., when strnlen (src, len) == len,
+        -:  634:   this function writes a NUL byte into dest[len].  Thus, the length
+        -:  635:   of the destination buffer must be at least LEN + 1.
+        -:  636:   The DEST and SRC buffers must not overlap.  */
+        -:  637:static inline char *
+        -:  638:stzncpy (char *restrict dest, char const *restrict src, size_t len)
+        -:  639:{
+        -:  640:  char const *src_end = src + len;
+        -:  641:  while (src < src_end && *src)
+        -:  642:    *dest++ = *src++;
+        -:  643:  *dest = 0;
+        -:  644:  return dest;
+        -:  645:}
+        -:  646:
+        -:  647:#ifndef ARRAY_CARDINALITY
+        -:  648:# define ARRAY_CARDINALITY(Array) (sizeof (Array) / sizeof *(Array))
+        -:  649:#endif

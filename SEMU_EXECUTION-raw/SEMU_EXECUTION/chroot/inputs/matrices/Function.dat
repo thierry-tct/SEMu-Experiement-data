@@ -1,0 +1,17 @@
+ktestfunction tests_misc_chroot-fail.sh-out/Dev-out-0/devtest.ktest tests_misc_chroot-fail.sh-out/Dev-out-1/devtest.ktest tests_misc_chroot-fail.sh-out/Dev-out-2/devtest.ktest tests_misc_help-version.sh-out/Dev-out-0/devtest.ktest tests_misc_help-version.sh-out/Dev-out-10/devtest.ktest tests_misc_help-version.sh-out/Dev-out-1/devtest.ktest tests_misc_help-version.sh-out/Dev-out-5/devtest.ktest tests_misc_help-version.sh-out/Dev-out-6/devtest.ktest tests_misc_help-version.sh-out/Dev-out-3/devtest.ktest tests_misc_help-version.sh-out/Dev-out-2/devtest.ktest tests_misc_help-version.sh-out/Dev-out-8/devtest.ktest tests_misc_help-version.sh-out/Dev-out-11/devtest.ktest tests_misc_help-version.sh-out/Dev-out-7/devtest.ktest tests_misc_help-version.sh-out/Dev-out-9/devtest.ktest tests_misc_help-version.sh-out/Dev-out-4/devtest.ktest tests_misc_invalid-opt.pl-out/Dev-out-0/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-0/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-1/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-5/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-3/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-2/devtest.ktest tests_misc_chroot-credentials.sh-out/Dev-out-4/devtest.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test000003.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test000001.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test000002.ktest
+src/groups.c:usage 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+src/groups.c:main 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 
+src/whoami.c:usage 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+src/whoami.c:main 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 
+src/chroot.c:set_additional_groups 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 
+src/chroot.c:usage 1 1 0 1 1 0 0 1 0 1 1 0 0 0 1 1 0 0 0 0 0 0 0 0 1 
+src/chroot.c:main 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+src/id.c:usage 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+src/id.c:main 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 
+src/id.c:gidtostr_ptr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+src/id.c:uidtostr_ptr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 
+src/id.c:print_user 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 0 0 0 
+src/id.c:print_full_info 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+src/group-list.c:print_group_list 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 
+src/group-list.c:gidtostr_ptr 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 
+src/group-list.c:print_group 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 

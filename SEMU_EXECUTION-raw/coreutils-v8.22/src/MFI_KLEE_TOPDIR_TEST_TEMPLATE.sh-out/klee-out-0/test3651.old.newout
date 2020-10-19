@@ -1,0 +1,4 @@
+klee-replay: TEST CASE: /media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/repos/chown/src/MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test3651.ktest
+klee-replay: ARGS: "/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown" ":+22:::::::::::::" "" "-R" 
+/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown: invalid group: ':+22:::::::::::::'
+klee-replay: EXIT STATUS: ABNORMAL 1 

@@ -1,0 +1,4 @@
+ktestfunction MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test884.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test2025.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test1011.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test844.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test61.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test869.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test2027.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test1786.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test1704.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test916.ktest
+src/chroot.c:set_additional_groups 0 0 0 0 0 0 0 0 0 0 
+src/chroot.c:usage 1 1 1 0 1 1 1 1 0 1 
+src/chroot.c:main 1 1 1 1 1 1 1 1 1 1 

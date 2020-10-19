@@ -1,0 +1,3 @@
+ktestfunction MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test260.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test494.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test270.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test286.ktest
+src/nproc.c:usage 1 1 1 1 
+src/nproc.c:main 1 1 1 1 

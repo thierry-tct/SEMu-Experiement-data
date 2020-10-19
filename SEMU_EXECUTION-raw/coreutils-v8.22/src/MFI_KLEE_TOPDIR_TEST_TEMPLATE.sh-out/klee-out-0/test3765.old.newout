@@ -1,0 +1,4 @@
+klee-replay: TEST CASE: /media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/repos/chown/src/MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test3765.ktest
+klee-replay: ARGS: "/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown" ":" "A" "-R" 
+/media/disk2/SEMU-EXPERIMENT/rootteststools/workspace/metactrl/chown/chown-output/built-versions/chown: cannot read directory 'A': Permission denied
+klee-replay: EXIT STATUS: ABNORMAL 1 

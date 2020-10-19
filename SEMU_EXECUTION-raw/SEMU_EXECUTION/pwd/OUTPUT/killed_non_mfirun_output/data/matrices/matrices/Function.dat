@@ -1,0 +1,10 @@
+ktestfunction MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test154.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test375.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test830.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test650.ktest MFI_KLEE_TOPDIR_TEST_TEMPLATE.sh-out/klee-out-0/test497.ktest
+src/pwd.c:usage 0 0 0 0 0 
+src/pwd.c:file_name_free 0 0 0 0 0 
+src/pwd.c:file_name_init 0 0 0 0 0 
+src/pwd.c:file_name_prepend 0 0 0 0 0 
+src/pwd.c:nth_parent 0 0 0 0 0 
+src/pwd.c:find_dir_entry 0 0 0 0 0 
+src/pwd.c:robust_getcwd 0 0 0 0 0 
+src/pwd.c:logical_getcwd 1 1 1 1 1 
+src/pwd.c:main 1 1 1 1 1 
